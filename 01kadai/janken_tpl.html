@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<script src="js/jquery-2.1.3.min.js"></script>
+<link rel="stylesheet" href="css/sample.css">
+<title>じゃんけん</title>
+</head>
+<body>
+
+<header>
+    <h1>じゃんけん</h1>
+</header>
+
+<main>
+    <p class="opn">はじめる</p>
+    <ul style="display: none;">
+        <li id="gu_btn"><img src="box/gu/9344.jpg" width="100" height="=100">グー</li>
+        <li id="cho_btn"><img src="box/tyoki/9356.jpg" width="100" height="=100">チョキ</li>
+        <li id="par_btn"><img src="box/pa-/9357.jpg" width="100" height="=100">パー</li>
+    </ul>
+    <div class ="cpu" style="display: none;">コンピュータの出した手は？「<span id="pc_hands">なに？</span>」</div>
+    <div id="judgment" style="display: none;">判定は？</div>
+    <div class="qa" style="display: none;"><img src="box/gununu.png" width="200" height="=200" alt="">ん？</div>
+    <div class="jg" style="display: none;"><img src="box/igiari.jpg" width="200" height="=200" alt=""></div>
+
+<div class="reload"  style="display: none;">もどる</div>
+</main>
+
+<footer></footer>
+<script>
+
+const $opening = $('.opn');
+const $retry = $('.retry');
+const $reload = $('.reload');
+const $cpu = $('.cpu');
+const $judgment = $('#judgment');
+const $jg = $('.jg');
+const $qa = $('.qa');
+
+//はじめる
+$('.opn').on('click',function(){
+    $opening.fadeOut(500,function(){
+        $opening.remove();
+        $('ul,.reload').show();
+    })
+});
+
+//もどる
+$('.reload').on('click',function(){
+    $reload.fadeOut(function(){
+        location.reload();
+    })
+});
+
+
+//じゃんけん用のSCRIPTを書いてください
+
+$("#gu_btn").on("click",function(){
+    const r = Math.ceil(Math.random()*5); 
+    console.log(r);
+
+    $cpu.show();
+    $judgment.show();
+    $retry.show(3000);
+    $reload.show(5000);
+    
+    $jg.hide();
+
+// <img src="about_04.jpg" width="300">
+    if(r <=1 && r <= 2){
+        $("#pc_hands").html("グー");
+        $("#judgment").html("あいこ");
+        
+    }
+    if(r > 2 && r < 3){
+        $("#pc_hands").html("チョキ");
+        $("#judgment").html("あなたの勝ち！");
+    }
+    if(r >= 3 && r <= 4){
+        $("#pc_hands").html("パー");
+        $("#judgment").html("あなたの負け！");
+        $(".qa").show(1500);
+    }
+    if(r == 5){
+            $("#pc_hands").html('<img src="box/mutyoki.png" width="150" height="=150">無敵チョキ!');
+            $("#judgment").html("あなたの負け！");
+            $(".jg").show(1500);
+    }
+});
+
+$("#cho_btn").on("click",function(){
+    const r = Math.ceil(Math.random()*5); 
+    console.log(r);
+
+    $cpu.show();
+    $judgment.show();
+    $retry.show(3000);
+    $reload.show(5000);
+    
+    $jg.hide();
+
+// <img src="about_04.jpg" width="300">
+    if(r <=1 && r <= 2){
+        $("#pc_hands").html("チョキ");
+        $("#judgment").html("あいこ");
+    }
+    if(r > 2 && r < 3){
+        $("#pc_hands").html("パー");
+        $("#judgment").html("あなたの勝ち！");
+    }
+    if(r >= 3 && r <= 4){
+        $("#pc_hands").html("グー");
+        $("#judgment").html("あなたの負け！");
+        $(".qa").show(1500);
+    }
+
+    if(r == 5){
+        $("#pc_hands").html('<img src="box/mutyoki.png" width="150" height="=150">無敵チョキ!');
+        $("#judgment").html("あなたの負け！");
+        $(".jg").show(1500);
+        
+    }
+});
+
+$("#par_btn").on("click",function(){
+    const r = Math.ceil(Math.random()*5); 
+    console.log(r);
+
+    $cpu.show();
+    $judgment.show();
+    $retry.show(3000);
+    $reload.show(5000);
+    
+    $jg.hide();
+
+// <img src="about_04.jpg" width="300">
+if(r <=1 && r <= 2){
+        $("#pc_hands").html("グー");
+        $("#judgment").html("あなたの勝ち！");
+        
+    }
+    if(r > 2 && r < 3){
+        $("#pc_hands").html("パー");
+        $("#judgment").html("あいこ");
+    }
+    if(r >= 3 && r <= 4){
+        $("#pc_hands").html("チョキ");
+        $("#judgment").html("あなたの負け！");
+        $(".qa").show(1500);
+    }
+    if(r == 5){
+            $("#pc_hands").html('<img src="box/mutyoki.png" width="150" height="=150">無敵チョキ!');
+            $("#judgment").html("あなたの負け！");
+            $(".jg").show(1500);
+    }
+});
+
+$(".jg").on("click",function(){
+    const s = Math.ceil(Math.random()*2);
+    console.log(s);
+        if(s==1){
+            $(".jg").html('<img src="box/orz.jpg" width="150" height="=150">やっぱり負け！');
+        }
+        if(s==2){
+            $(".jg").html('<img src="box/yatta.png" width="150" height="=150">コンピュータの反則であなたの勝ち！');
+        }
+});
+$(".qa").on("click",function(){
+    const s = Math.ceil(Math.random()*2);
+    console.log(s);
+        if(s==1){
+            $(".qa").html('<img src="box/orz.jpg" width="150" height="=150">やっぱり負け！');
+        }
+        if(s==2){
+            $(".qa").html('<img src="box/trap.jpg" width="200" height="=200">コンピュータの遅出しであなたの勝ち！');
+        }
+}); 
+</script>
+</body>
+</html>
