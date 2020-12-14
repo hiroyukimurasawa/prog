@@ -1,0 +1,546 @@
+@charset "utf-8";
+html{
+    font-size: 62.5%;
+}
+body{
+    color: #333333;
+    font-family:"Open Sans",'ヒラギノ角ゴ ProN W3', Hiragino Kaku Gothic ProN, "メイリオ", Meiryo, sans-serif;
+    font-size: 16px;
+}
+img{
+    max-width: 100%;
+    height: auto;
+}
+.text-center{
+    text-align: center;
+}
+/* 大文字 */
+.capital_letter{
+    text-transform: uppercase;
+}
+/* hero-image */
+.hero-image{
+    position: relative;
+}
+.hero-image__text{
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate3d(-50%,-120%,0);
+    color: #fff;
+    font-size: 48px;
+    font-weight: bold;
+    letter-spacing: 0.04rem;
+}
+.hero-image__text2{
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate3d(-60%,70%,0);
+    color: #fff;
+    font-size: 32px;
+    letter-spacing: 0rem;
+}
+/* header */
+.header{
+    background-color: #ffffff;
+    margin: 0 113px 0 113px;
+}
+.header-wrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 55px;
+    font-size: 1.8rem;
+    margin: 0 auto;
+}
+.nav-list{
+    display: flex;
+}
+.nav-item{
+    margin: 0 0 0 40px;
+}
+.nav-item>a{
+    color: #272614;
+}
+.fit-picture {
+    width: auto;
+    height: 80%;
+}
+/* cssabout */
+.about-sp{
+    display: none;
+}
+.profile{
+    padding: 80px 0;
+}
+.profile-wrapper{
+    width: 560px;
+    margin: auto;
+    /* display: flex; */
+    /* flex-wrap: wrap; */
+    /* justify-content: center; */
+    background-color: #888888;
+}
+.profile__title{
+    margin: 0 0 40px;
+    font-size: 2.4rem;
+    font-weight: bold;
+    color: #FFD61A;
+}
+.profile__eyecatch{
+    margin: 0 0 24px;
+}
+.profile__name{
+    margin: 0 0 40px;
+    font-size: 1.6rem;
+    color: #333333;
+}
+.profile__text{
+    white-space: pre-wrap;
+    margin: 0 auto;
+    width: 640px;
+    /* height: 232px; */
+    color: #333333;
+    line-height: 2.7rem;
+    text-align: center;
+    text-align: inter-deograph;
+}
+/* //cssabout */
+/* csscourse */
+.course{
+    margin: 64px auto 64px;
+}
+/* //csscourse */
+/* coursemenu */
+.course-wrapp2{
+    display: none;
+}
+.img-vw{
+    width : 50vw ;
+}
+.course-box{
+    background-color: #FAFAFA;
+    display: flex;
+    width: 1366px;
+    height: 460px;
+    margin: 0 auto;
+}
+.course-box2{
+    background-color: #FAFAFA;
+    display: flex;
+    width: 1366px;
+    height: 460px;
+    flex-direction: row-reverse;
+    margin: 0 auto;
+}
+.text-right{
+    width: 530px;
+    height: 193px;
+    line-height: 27px;
+    margin: 149px auto 148px 48px;
+}
+.text-left{
+    width: 522px;
+    height: 193px;
+    line-height: 27px;
+    margin: 142px 48px auto 113px;
+}
+.course-title{
+    font-size: 21px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+/* //coursemenu */
+/* cssnews */
+.news-wrapper{
+    margin-top: 96px;
+    margin-bottom: 64px;
+}
+.news-title{
+    color: #ffd61a;
+    font-size: 24px;
+    margin-top: 96px;
+    text-align: center;
+}
+.news-title--jp{
+    display: block;
+    width: auto;
+    color: #333;
+    font-size: 16px;
+    font-weight: normal;
+    margin-top: 24px;
+}
+.news-list{
+    display: flex;
+    width: 1140px;
+    justify-content: center;;
+    margin-left: auto;
+    margin-right: auto;
+}
+.news-card{
+    margin-bottom: 40px;
+    min-width: 33.333%;
+}
+.news-contents{
+    margin-top: 24px;
+    padding-left: 16px;
+}
+.news-sub-heading{
+    font-weight: bold;
+}
+.news-descript{
+    white-space: pre-wrap;
+    margin-top: 24px;
+}
+.news-date{
+    margin-top: 16px;
+    color: #999999;
+    font-size: 14px;
+}
+.news-buttun{
+    background-color: #ffd61a;
+    color: #fff;
+    padding-top: 22px;
+    padding-bottom: 22px;
+    padding-left: 61px;
+    padding-right: 61px;
+}
+.news-thumb{
+    width: 364px;
+    height: 243px;
+}
+.news-footer{
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 86px;
+}
+/* //cssnews */
+/* access */
+.access{
+    color: #333333;
+    background-color: #FAFAFA;
+    font-size: 24px;
+    margin: 64px auto 64px;
+    padding-top: 64px;
+    text-align: center;
+}
+.access-title--jp{
+    display: block;
+    color: #333;
+    font-size: 16px;
+    font-weight: normal;
+    margin-top: 24px;
+}
+.list-wrapper{
+    width: 490px;
+    margin: auto;
+    padding-top: 60px;
+    padding-bottom: 80px;
+}
+.access-list{
+    display: flex;
+    flex-wrap: wrap;
+    width: 600px;
+    /* margin: 0 0 40px; */
+    font-size: 1.6rem;
+}
+.name{
+    font-weight: bold;
+    text-align: right;
+    width: 120px;
+    margin: 0 24px 20px 0;
+}
+.cc{
+    margin: 0 0 20px;
+    width: 373px;
+    text-align: left;
+}
+.map{
+    width: 100%;
+}
+/* contact */
+.contact__title{
+    margin: 0 0 40px;
+    font-size: 2.4rem;
+    font-weight: bold;
+    color: #333333;
+}
+.course-card{
+    margin-top: 48px;
+}
+.form-wrapper{
+    width: 660px;
+    margin: auto;
+}
+.form-inner{
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 0 40px;
+}
+.form-title{
+    width: 152px;
+    margin: 0 20px 0 0;
+    padding: 8px 0 0 0;
+    font-weight: bold;
+    text-align: right;
+}
+.form-title.check-radio{
+    padding: 0;
+}
+.form-item{
+    width: 408px;
+    margin: 0 0 24px;
+}
+.form-parts{
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px;
+    border: solid 1px #c9c9c9;
+    font-size: 1.6rem;
+}
+.formlabel{
+    margin: 0 16px 0px 0;
+    font-size: 1.4rem;
+}
+.form-margin{
+    margin: 0 0 24px 0;
+}
+input[type*="radio"]{
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    margin: 0 10px 0 0;
+    border: solid 1px #a0a0a0;
+    border-radius: 50%;
+    vertical-align: -2px;
+}
+input[type*="radio"]:checked{
+    background-color: #333333;
+}
+.btn-submit{
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+}
+.contact-btn{
+    background-color: #ffd61a;
+    color: #fff;
+    width: 264px;
+    height: 60px;
+}
+.course-contents2--jp{
+    line-height: 27px;
+    width: 466px;
+    height: 130px;
+    margin: 64px auto 80px auto;
+    text-align: center;
+    text-align: inter-deograph;
+}
+/* footer */
+.footer{
+    margin-top: 120px;
+    width: 100%;
+    max-height: 80px;
+    padding: 33px 0 33px 0;
+    color: #FFFFFF;
+    background-color: #707070;
+    text-align: center;
+}
+/* //footer */
+
+/* モバイル */
+@media screen and (max-width:640px){
+    /* top */
+    .img-sp{
+        max-width: 100%;
+        height: auto;
+        width: 375px;
+        height: 375px;
+    }
+    .hero-image{
+        width: 375px;
+        height: 375px;
+    }
+    .hero-image__text{
+        font-size: 24px;
+        white-space: nowrap;
+    }
+    .hero-image__text2{
+        font-size: 16px;
+        white-space: pre-wrap;
+        font-weight: normal;
+        line-height: 27px;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    /* about */
+    .about-thumb{
+        display: none;
+    }
+    .about-sp{
+        display: flex;
+        margin-bottom: 64px;
+    }
+    .profile_wrapper{
+        box-sizing: border-box;
+        width: 100%;
+        padding: 0 10px;
+    }
+    .profile{
+        padding:40px 0 40px;
+    }
+    .profile__text{
+        margin: 0 0 24px;
+        white-space: pre-wrap;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 0 10px;
+    }
+    .profile__name{
+        margin: 0 0 20px;
+    }
+    /* coursemenu */
+    .course01{
+        display: none;
+    }
+    .course-wrapp2{
+        display: block;
+    }
+    .img-right{
+        margin-bottom: 24px;
+    }
+    .img-left{
+        margin-bottom: 24px;
+    }
+    .course-box{
+        /* width: 375px; */
+        height: 470px;
+        background-color: #FAFAFA;
+        /* flex-direction: column; */
+    }
+    .course-box2{
+        /* width: 375px; */
+        height: 470px;
+        background-color: #FAFAFA;
+        /* flex-direction: column; */
+    }
+    .text-right{
+        width: auto;
+        height: auto;
+        margin: 0 0 40px;
+        padding: 0 10px;
+    }
+    .text-left{
+        width: auto;
+        height: auto;
+        margin: 0 0 40px;
+        padding: 0 10px;
+    }
+    .course-title{
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    /* news */
+    .news{
+        margin: 40px 0;
+    }
+    .news-wrapper{
+        margin: 40px auto 40px;
+    }
+    .news-title--jp{
+        margin-bottom: 62px;
+    }
+    .news-list{
+        display: block;
+        width: auto;
+    }
+    .news-card{
+        margin: 20px 0 20px 0;
+    }
+    .news-footer{
+        margin-top: 64px;
+        margin-bottom: 21px;
+    }
+    .news-buttun{
+        padding: 17px 61px;
+    }
+    /* access */
+    .list-wrapper{
+        padding: 0;
+        width: 100%;
+    }
+    .access{
+        padding: 40px 0 0 0;
+    }
+    .access-list{
+        display: block;
+        /* flex-wrap: wrap; */
+        text-align: left;
+        padding: 0 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .map{
+        margin-top: 24px;
+    }
+    .name{
+        text-align: left;
+        margin: 40px 0 18px;
+    }
+    .cc:last-child {
+        padding-bottom: 37px;
+        margin-bottom: 0;
+    }
+    /* contact */
+    .course{
+        margin: 0;
+    }
+    .contact{
+    padding: 57px 0 99px;
+    }
+    .form-wrapper{
+        width: 100%;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+    .form-title{
+        width: 100%;
+        text-align: left;
+        padding: 0;
+        margin-bottom: 24px;
+    }
+    .form-item{
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .form-parts{
+        padding: 10px 8px;
+    }
+    .news-footer{
+        margin-bottom: 0;
+    }
+    .form-label{
+        font-size: 14px;
+    }
+    .footer{
+        margin-top: 0;
+        padding: 0 0 24px;
+        white-space: pre-wrap;
+        line-height: 24px;
+    }
+    .copyright{
+        font-size: 12px;
+    }
+    .header{
+        display: none;
+    }
+}
