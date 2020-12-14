@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Chatアプリ</title>
+</head>
+<link rel="stylesheet" href="css/style.css">
+<body>
+<main>
+
+<div>
+    <div id="output" style="width:600px; height: 300px; overflow:auto;"></div>
+</div>
+<div>
+    名前: <input type="text" id="uname">
+</div>
+
+<ol class="icon">
+	<li><span class="imgs" data-img="0" data-type="1" data-img-type="ねこ" onclick= "getDataType1(this);"><img src="imgs/buke.png" width="60"></span></li>
+	<li><span class="imgs" data-img="1" data-type="2" data-img-type="とり" onclick= "getDataType1(this);"><img src="imgs/tuku.jpg" width="60"></span></li>
+	<li><span class="imgs" data-img="2" data-type="3" data-img-type="いぬ" onclick="getDataType1(this);"><img src="imgs/caram.png" width="60"></span></li>
+    <ul>
+        <li>icon：<span id="sampleOutput1"></span></li>
+    </ul>
+</ol>
+
+<style scoped="scoped">
+ol > li > span {
+	cursor: pointer;
+}
+</style>
+<div>
+    <textarea id="text" cols="40" rows="5"></textarea><button id="send" type="submit">送信</button>
+</div>
+<button class="delete">全削除</button>
+<!-- コンテンツ表示画面 -->
+
+<!-- <div>
+    <div class="icon">
+        <div class="imgs" data-img="0"><img src="imgs/buke.png" width="80"></div>
+        <div class="imgs" data-img="1"><img src="imgs/tuku.jpg" width="80"></div>
+        <div class="imgs" data-img="2"><img src="imgs/caram.png" width="80"></div>
+    </div>
+</div> -->
+
+<!--/ コンテンツ表示画面 -->
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- JQuery -->
+
+
+<!--** 以下Firebase **-->
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/8.1.2/firebase.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+    https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<script>
+// Your web app's Firebase configuration
+    var firebaseConfig = {
+    apiKey: "AIzaSyDfJs9kyelfg6STxOl9al6ciA9OdntJoEk",
+    authDomain: "gsdemo-f1527.firebaseapp.com",
+    projectId: "gsdemo-f1527",
+    storageBucket: "gsdemo-f1527.appspot.com",
+    messagingSenderId: "687799128964",
+    appId: "1:687799128964:web:6f2e99ad1b1dae08abc3d1"
+};
+// Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+//ref( 例"/useritem/")の中にディレクトリ構造を書くとそのデータ構造で保存できます。
+    const ref =firebase.database().ref('chat');
+
+    document.getElementById('uname').focus();
+
+//アイコン表示
+function getDataType1( $this ) {
+	var $output = $this.getAttribute( "data-type" );
+	if( $this.getAttribute( "data-img-type" ) ) {
+		$output += " " + $this.getAttribute( "data-img-type" );
+	}
+	document.getElementById( "sampleOutput1" ).innerHTML = $output;
+}
+
+
+//アイコン処理
+let d=0;
+const img =["buke.png","tuku.jpg","caram.png"];
+$(".imgs").on("click",function(){
+    d = $(this).attr("data-img");
+});
+
+//送信イベント
+$("#send").on("click",function(){
+    $("dl").addClass("talk");
+    const uname = $("#uname").val();
+    const text = $("#text").val();
+    //日時
+    let week =["日","月","火","水","木","金","土"];
+    let now = new Date();
+    let month = now.getMonth() + 1;
+    //00表示
+    var month2 = ('0' + month).slice(-2);
+    let date = now.getDate();
+    //00表示    
+    var date2 = ('0' + date).slice(-2);
+    let h = now.getHours();
+    let m =now.getMinutes();
+    //00表示
+    var mmi = ('0' + m).slice(-2);
+    let ss =now.getSeconds();
+    //00表示
+    var ss2 = ('0' + ss ) .slice(-2);
+    let day = now.getDay();
+
+    let str = month2 +"月"+ date2 +"日" +"("+ week[day] +")" + h + "時" + mmi +"分"+ ss2 +"秒";
+
+    // alert(uname + text);
+    const msg = {
+        uname: uname,//送信名:値
+        text: text,   //送信名:値
+        str: str,
+        icon:d
+    };
+
+    $('#text').val('');
+    ref.push(msg);   //サーバーにpush
+
+//スクロール
+    var $scrollAuto=$('#output');
+    $scrollAuto.animate({
+        scrollTop: $scrollAuto[0].scrollHeight
+    },0);    
+
+});
+// 設定開始（メッセージの内容を設定）
+var msg1 = '名前いれた？'; // 時間帯1
+var msg2 = '挨拶をしましょう'; // 時間帯2
+var msg3 = '削除ボタンはいつでも押せます'; // 時間帯3
+// 設定終了
+var now = new Date();
+var min = now.getSeconds();
+// 表示開始
+// 時間帯1
+if(min >= 0 && min <= 19){
+    $('textarea').val(msg1);
+}
+// 時間帯2
+else if(min >= 20 && min <= 39){
+	$('textarea').val(msg2);
+}
+// 時間帯3
+else{
+	$('textarea').val(msg3);
+}
+// 表示終了
+
+//受信イベント
+ref.on("child_added",function(data){
+    const v = data.val(); //dataオブジェクトの中のdata取得
+    const k = data.key;   //KEYを取得(削除に必要となる)
+    const h ='<dl id='+k+'><dt><img src="imgs/'+img[+v.icon]+'"width="50">'+v.uname+'</dt><dd>'+v.text+'</dd><dd>'+ v.str+'<button class="ban">BAN</button></dd></dl>';
+    $("#output").append(h);//一番下にデータを挿入=append 逆prepend
+//スクロール
+var $scrollAuto=$('#output');
+    $scrollAuto.animate({
+        scrollTop: $scrollAuto[0].scrollHeight
+    },0);    
+
+});
+
+//enterで送信イベント
+$("#text").on("keydown",function(e){
+    $("dl").addClass("talk");
+    // console.log(e.keyCode);
+    if(e.keyCode==13){
+        const uname = $("#uname").val();
+        const text = $("#text").val();
+        // alert(uname + text);
+    //日時
+    let week =["日","月","火","水","木","金","土"];
+    let now = new Date();
+    let month = now.getMonth() + 1;
+    var month2 = ('0' + month).slice(-2);
+    let date = now.getDate();
+    var date2 = ('0' + date).slice(-2);
+    let h = now.getHours();
+    let m =now.getMinutes();
+    var mmi = ('0' + m).slice(-2);
+    let ss = now.getSeconds();
+    var ss2 = ('0' + ss ) .slice(-2);
+    let day = now.getDay();
+
+    let str = month2 +"月"+ date2 +"日" +"("+ week[day] +")" + h + "時" + mmi +"分"+ ss2 +"秒";
+
+        const msg = {
+        uname: uname,//送信名:値
+        text: text,   //送信名:値
+        str: str,
+        icon:d
+    };
+
+    //textを空にする
+    $('#text').val('');
+    
+    ref.push(msg);   //サーバーにpush
+    }
+    //スクロール
+    var $scrollAuto=$('#output');
+    $scrollAuto.animate({
+        scrollTop: $scrollAuto[0].scrollHeight
+    },0);    
+
+});
+    // 削除処理
+$(document).on('click', '.ban', (event) => {
+    const id = $(event.target).closest('dl').attr('id');
+    firebase.database().ref('chat/'+id).remove();
+
+});
+
+// 全削除処理
+$(document).on('click', '.delete', (event) => {
+    firebase.database().ref('chat').remove();
+});
+
+// 削除表示
+ref.on("child_removed", (data) => {
+    $("#"+data.key).remove();
+});
+
+
+</script>
+</main>
+</body>
+</html>
+
