@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
-
+    
+    <link rel="stylesheet" type="text/css" href="css/screen.css" media="all" />
+    
 <head>
     <meta charset="utf-8">
     <title>canvas_base.html</title>
@@ -9,6 +11,25 @@
 <body>
     <section>
         <h1>Canvas</h1>
+        <div id="container">
+
+            <div id="loopslider">
+            <ul>
+            <li><a href="#"><img src="img/photo01.jpg" width="100" height="100" alt="" /></a></li>
+            <li><a href="#"><img src="img/photo02.jpg" width="100" height="100" alt="" /></a></li>
+            <li><a href="#"><img src="img/photo03.jpg" width="100" height="100" alt="" /></a></li>
+            <li><a href="#"><img src="img/photo04.jpg" width="100" height="100" alt="" /></a></li>
+            <li><a href="#"><img src="img/photo05.jpg" width="100" height="100" alt="" /></a></li>
+            <li><a href="#"><img src="img/photo06.jpg" width="100" height="100" alt="" /></a></li>
+            <li><a href="#"><img src="img/photo07.jpg" width="100" height="100" alt="" /></a></li>
+            <li><a href="#"><img src="img/photo08.jpg" width="100" height="100" alt="" /></a></li>
+            <li><a href="#"><img src="img/photo09.jpg" width="100" height="100" alt="" /></a></li>
+            <li><a href="#"><img src="img/photo10.jpg" width="100" height="100" alt="" /></a></li>
+            </ul>
+            </div><!--/#loopslider-->
+            
+            </div><!--/#container-->
+
         <nav>
             <!-- 線の色を変更するHTML要素 -->
         <div class="ctr" style="display: flex;">
@@ -25,12 +46,19 @@
                 <button id="redo" type="button" onclick="nextCanvas()">進む</button>
             </div>
 
+            <input type="file" id="inputfile" accept="image/*" />
+
         </nav>
+        <div class="wrap" style="display: flex;">
+        <div id="dnd">
+        <canvas id="dnd-canvas" width="400" height="400" style="border:1px solid blue;"></canvas>
+        </div>
         <canvas id="drowarea" width="400" height="400" style="border:1px solid blue;"></canvas>
+        
+        </div>
     </section>
     <span id="title_tmpList">ローカルストレージデータ（クリックで読み込み、長押しで削除）</span>
     <div id="tmpList" style="height:75px;"></div>
-
 
     <script src="js/jquery-2.1.3.min.js"></script>
     <script>
@@ -289,6 +317,182 @@ function draw(src) {
     }
 }
 
+//
+window.addEventListener('DOMContentLoaded', () => {
+
+let target = document.getElementById('dnd');
+
+const dragOverHandler = {
+    handleEvent: (event) => {
+        // drop 側に”copy”を許可します
+        // none: ドロップを禁止
+        // copy: コピーのみ許可
+        // move: 移動のみ許可
+        // link: リンクのみ許可
+        // copyMove: コピー/移動のみ許可
+        // copyLink: コピー/リンクのみ許可
+        // linkMove: リンク/移動のみ許可
+        // all: 全ての操作が許可
+        event.dataTransfer.dropEffect = 'all';
+        // dragenter および dragover イベントに対する既定動作はドロップ禁止です。
+        // この規定動作を無効化するため、preventDefault() メソッドを呼び出し、その場所をドロップ可能領域とします。
+        event.preventDefault();
+    }
+};
+target.addEventListener('dragover', dragOverHandler, { capture: false, once: false, passive: false });
+
+const dropHandler = {
+    handleEvent: (event) => {
+        const files = event.dataTransfer.files;
+
+        if (files.length === 1) {
+        const file = files[0];
+        const reader = new FileReader();
+        reader.addEventListener('load', loadReaderHandler, { capture: false, once: true, passive: false });
+        reader.readAsDataURL(file);
+        }
+        event.preventDefault();
+    }
+    }
+
+const drawCanvasHandler = {
+    handleEvent: (event) => {
+        const img = event.target;
+        let canvas = document.getElementById('dnd-canvas');
+        let ctx2 = canvas.getContext('2d');
+        canvas.width = 400;
+        canvas.height = 400;
+        ctx2.clearRect(0, 0, canvas.width, canvas.height);
+        ctx2.drawImage(img, 0, 0, img.width, img.height, 0, 0, 400, 400);
+        ctx2.save();
+    }
+    };
+
+const loadReaderHandler = {
+    handleEvent: (event) => {
+        const img = new Image();
+        img.addEventListener('load', drawCanvasHandler, { capture: false, once: true, passive: true });
+        img.src = event.target.result;
+    }
+    };
+
+target.addEventListener('drop', dropHandler, { capture: false, once: false, passive: false });
+
+}, { capture: false, once: true, passive: true });
+
+//アルバム
+$(function(){
+	var moveInterval = 1;
+	var slideTime = 10;
+
+	$('#loopslider').each(function(){
+		var loopsliderWidth = $(this).width();
+		var loopsliderHeight = $(this).height();
+		$(this).children('ul').wrapAll('<div id="loopslider_wrap"></div>');
+		$('#loopslider').append('<div id="loopleft">≪</div><div id="loopright">≫</div>');
+		$('#loopleft,#loopright').css({opacity:'0.5'});
+
+		var listWidth = $('#loopslider_wrap').children('ul').children('li').width();
+		var listCount = $('#loopslider_wrap').children('ul').children('li').length;
+
+		var loopWidth = (listWidth)*(listCount);
+
+		$('#loopslider_wrap').css({
+			top: '0',
+			left: '0',
+			width: ((loopWidth) * 2),
+			height: (loopsliderHeight),
+			overflow: 'hidden',
+			position: 'absolute'
+		});
+
+		$('#loopslider_wrap ul').css({
+			width: (loopWidth)
+		});
+		$('#loopslider_wrap ul').clone().appendTo('#loopslider_wrap');
+
+		timerLeft();
+
+		function timerLeft(){
+			setTimer = setInterval(function(){loopPositionLeft()},0);
+		};
+
+		function loopPositionLeft(){
+			clearInterval(setTimer);
+			$('#loopslider_wrap').stop().animate({left:'-=' + (moveInterval) + 'px'},slideTime,'linear',function(){
+				var posLeft = parseInt($('#loopslider_wrap').css('left'));
+				var widthCal = (loopWidth)-((loopWidth)*2);
+				if (posLeft === widthCal) {
+					$('#loopslider_wrap').css({left:'0'});
+				}
+				timerLeft();
+
+				$(this).hover(function(){
+					$('#loopslider_wrap').stop();
+					clearInterval(setTimer);
+				},function(){
+					loopPositionLeft();
+				});
+
+			});
+
+		};
+
+		$('#loopleft').hover(function(){
+			$('#loopslider_wrap').stop();
+			clearInterval(setTimer);
+			timerLeft();
+		});
+
+		function timerRight(){
+			setTimer = setInterval(function(){loopPositionRight()},0);
+		};
+
+		function loopPositionRight(){
+			clearInterval(setTimer);
+			$('#loopslider_wrap').stop().animate({left:'+=' + (moveInterval) + 'px'},slideTime,'linear',function(){
+				var posLeft = parseInt($('#loopslider_wrap').css('left'));
+				var widthCal = (loopWidth)-((loopWidth)*2);
+				if (posLeft === 0) {
+					$('#loopslider_wrap').css({left:(-(loopWidth))});
+				}
+				timerRight();
+
+				$(this).hover(function(){
+					$('#loopslider_wrap').stop();
+					clearInterval(setTimer);
+				},function(){
+					loopPositionRight();
+				});
+			});
+
+		};
+
+		$('#loopright').hover(function(){
+			$('#loopslider_wrap').stop();
+			clearInterval(setTimer);
+			timerRight();
+		});
+	});
+});
+    /* JavaScript 側 */
+    var inputfile = document.getElementById("inputfile");
+    // ファイル選択ダイアログが選択されたときにイベントが発生
+    inputfile.addEventListener('change', (event) => {
+        const target = event.target;
+        const files = target.files;
+        const file = files[0];
+        
+    // ファイル名を出力
+    console.log(file.name);
+        
+    // ファイル内容を出力
+        const reader = new FileReader();
+        reader.addEventListener('load', (event) => {
+        console.log(reader.result);
+        });
+        reader.readAsText(file);
+        });
 </script>
 </body>
 
