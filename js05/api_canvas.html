@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+    
+    <link rel="stylesheet" type="text/css" href="css/screen.css" media="all" />
+    
+<head>
+    <meta charset="utf-8">
+    <title>canvas_base.html</title>
+</head>
+
+<body>
+    <section>
+        <h1>random-img</h1>
+
+        <nav>
+            <!-- 線の色を変更するHTML要素 -->
+        <div class="ctr" style="display: flex;">
+            <input type="color" id="color" value="#000000">
+            <h1 id="echo">色</h1>
+            <!-- 線の太さを変更するHTML要素 -->
+            <input type="range" id="range" min="1" max="100" value="10">
+            <h1 id="echo2">太さ</h1>
+        </div>
+            <div>
+                <button id="clear_btn">Canvasクリア</button>
+                <button id="tmpSaveButton">ローカルストレージ保存</button><span style="font-size:small;">（最大5個まで）</span>
+                <button id="undo" type="button" onclick="prevCanvas()">戻る</button>
+                <button id="redo" type="button" onclick="nextCanvas()">進む</button>
+            </div>
+
+            <input type="file" id="inputfile" accept="image/*" />
+
+        </nav>
+        <div class="wrap" style="display: flex;">
+        <div id="dnd">
+        <canvas id="dnd-canvas" width="400" height="400" style="border:1px solid blue;"></canvas>
+        </div>
+        <canvas id="drowarea" width="400" height="400" style="border:1px solid blue;"></canvas>
+        
+        </div>
+    </section>
+    <span id="title_tmpList">ローカルストレージデータ（クリックで読み込み、長押しで削除）</span>
+    <div id="tmpList" style="height:75px;"></div>
+
+    <script src="js/jquery-2.1.3.min.js"></script>
+    <script>
+        //初期化(変数letで宣言)
+        let canvas_mouse_event = false; //スイッチ [ true=線を引く, false=線は引かない ]  ＊＊＊
+        let oldX = 0; //１つ前の座標を代入するための変数
+        let oldY = 0; //１つ前の座標を代入するための変数
+        let bold_line = 10; //ラインの太さをここで指定
+        let color = "#000000"; //ラインの色をここで指定
+        //ローカルストレージ
+        var tmpList = $("#tmpList");
+        var prefix = "12345678";
+        
+        //------------------------------------------------
+        //const can = $("#drowarea")[0]; //CanvasElement
+        //const ctx = can.getContext("2d"); //描画するための準備！
+        //------------------------------------------------
+        //上2つのスクリプトを記述します。
+        const can = $("#drowarea")[0]; //CanvasElement
+        const ctx = can.getContext("2d"); //描画するための準備！
+        
+        //mousedown：フラグをTrue
+        //-----------------------------------------------
+        //oldX = e.offsetX;       //MOUSEDOWNしたX横座標取得
+        //oldY = e.offsetY; //MOUSEDOWN Y高さ座標取得
+        //canvas_mouse_event=true;
+        //-----------------------------------------------
+        //上5つのスクリプトを記述します。
+        $(can).on("mousedown",function(event){
+            // console.log(event);
+            oldX = event.offsetX;//現在地点XをoldXに代入
+            oldY = event.offsetY;//現在地点YをoldYに代入
+            canvas_mouse_event = true;//書くOK
+        });
+        
+        //canvas外処理
+        $(can).on("mouseout",function(event){
+            canvas_mouse_event = false;//書くNG
+        });
+
+        //mousemove：フラグがTrueだったら描く ※e：イベント引数取得
+        //----------------------------------------------
+        //  if(canvas_mouse_event==true){
+        //      const px = e.offsetX;
+        //      const py = e.offsetY;
+        //      ctx.strokeStyle = color;
+        //      ctx.lineWidth = bold_line;
+        //      ctx.beginPath();
+        //      ctx.lineJoin= "round";
+        //      ctx.lineCap = "round";
+        //      ctx.moveTo(oldX, oldY);
+        //      ctx.lineTo(px, py);
+        //      ctx.stroke();
+        //      oldX = px;
+        //      oldY = py;
+        //  }
+        //mousemoveevent作成
+        $(can).on("mousemove",function(e){
+            // console.log(e.offsetX);
+            if(canvas_mouse_event==true){
+                const px = e.offsetX; //現在地点X
+                const py = e.offsetY; //現在地点Y
+                ctx.strokeStyle = color; //色指定
+                ctx.lineWidth = bold_line; //太さ指定
+                ctx.beginPath();
+                ctx.lineJoin= "round";
+                ctx.lineCap = "round";
+                ctx.moveTo(oldX, oldY);
+                ctx.lineTo(px, py);
+                ctx.stroke();
+                oldX = px; //入れ替え
+                oldY = py; //入れ替え
+                moveflg = 1;
+            }
+        });
+
+        //mouseup：フラグをfalse
+        //------------------------------------------------
+        //    canvas_mouse_event=false;
+        //------------------------------------------------
+        $(can).on("mouseup",function(){
+            canvas_mouse_event=false;
+            moveflg = 0;
+    
+    setLocalStoreage();
+        });
+
+        //#clear_btn：クリアーボタンAction
+        //-----------------------------------------------------------------
+        //    ctx.beginPath();
+        //    ctx.clearRect(0, 0, can.width, can.height);サイズ変更に便利
+        //-----------------------------------------------------------------
+        $("#clear_btn").on("click",function(){
+            ctx.beginPath();
+            ctx.clearRect(0, 0, can.width, can.height);
+        });
+
+        //いろ
+        $("#color").on("change",function(){
+        const c = $(this).val(); //色値の取得color のchangeがおこったところのvalを取得
+        $("#echo").html(c);//表示
+        color = c;
+        });
+        //太さ
+        $("#range").on("change",function(){
+        const r = $(this).val(); //スライダーの値を取得
+        $("#echo2").html(r);
+        bold_line = r;
+        });
+
+//ローカルストレージイベント
+        $("#tmpSaveButton").click(function(){
+            if(!window.localStorage){alert("一時保存機能はブラウザがサポートしていません。"); return;}
+            var base64 = can.toDataURL();
+            // alert(base64);
+            for(var i = 1; i <= 5; i++) {
+                if(!window.localStorage.getItem(prefix + "tmpData" + i))break;
+            }
+            if (i > 5) {alert("一時保存領域が一杯です。"); return;}
+            window.localStorage.setItem("12345678tmpData"+i, base64);
+            loadTmpList();
+        });
+        
+        // $("#loadtmpDataButton").click(function(){
+        //     if(!window.localStorage){alert("一時保存機能はブラウザがサポートしていません。"); return;}
+        //     var base64 = window.localStorage.getItem(prefix + "tmpData1");
+        //     if (base64) {
+        //         // var c = can.get(0).getContext("2d");
+        //         ctx.clearRect(0, 0, can.width, can.height);
+        //         var image = new Image();
+        //         image.src = base64;
+        //         image.onload = function(){
+        //             ctx.drawImage(image, 0, 0);
+        //         }
+        //     }
+        // });
+        
+        
+        // ローカルストレージ 読み込み 個別削除
+        var loadTmpList = function() {
+        tmpList.get(0).innerHTML = "";
+        var timer = null;
+        if (window.localStorage) {
+            for (var i = 1; i <= 5; i++) {
+                var base64 = window.localStorage.getItem(prefix + "tmpData" + i);
+                if (base64) {
+                    var image = new Image();
+                    image.src = base64;
+                    image.index = i;
+                    image.onload = function(){
+                        this.width = 100;
+                        //this.style.backgroundColor = "black";
+                        this.className = "tmpImage";
+                        tmpList.get(0).appendChild(this);
+                    };
+                    image.onmousedown = function(){
+                        var img = this;
+                        timer = setTimeout(function(){
+                            if (confirm("削除しますか？")) {
+                                window.localStorage.removeItem(prefix + "tmpData" + img.index);
+                                for (var i = (img.index+1); i <= 5; i++) {
+                                    var base64 = window.localStorage.getItem(prefix + "tmpData" + i);
+                                    window.localStorage.removeItem(prefix + "tmpData" + i);
+                                    if (!base64) {break;}
+                                    window.localStorage.setItem(prefix + "tmpData" + (i-1), base64);
+                                }
+                                loadTmpList();
+                            }
+                            }, 1500);
+                    }
+                    image.onmouseup = function(){
+                        clearTimeout(timer);
+                        // var c = can.get(0).getContext("2d");
+                        ctx.clearRect(0, 0, can.width, can.height);
+                        ctx.drawImage(this, 0, 0);
+                    }
+                }
+            }
+            
+            if (!window.localStorage.getItem(prefix + "tmpData" + 1)) {
+                $("#title_tmpList").hide();
+            } else {
+                $("#title_tmpList").show();
+            }
+        }
+        }
+        loadTmpList();
+
+//ur
+// ストレージの初期化
+var myStorage = localStorage;
+window.onload = initLocalStorage();
+
+function resetCanvas() {
+    ctx.clearRect(0, 0, can.width, can.height);
+}
+
+function initLocalStorage(){
+    myStorage.setItem("__log", JSON.stringify([]));
+}
+function setLocalStoreage(){
+    var png = can.toDataURL();
+    var logs = JSON.parse(myStorage.getItem("__log"));
+
+    setTimeout(function(){
+        logs.unshift({png});
+
+        myStorage.setItem("__log", JSON.stringify(logs));
+
+        // currentCanvas = 0;
+        temp = [];
+
+    }, 0);
+}
+
+function prevCanvas(){
+    var logs = JSON.parse(myStorage.getItem("__log"));
+
+    if(logs.length > 0)
+    {
+        temp.unshift(logs.shift());
+
+        setTimeout(function(){
+            myStorage.setItem("__log", JSON.stringify(logs));
+            resetCanvas();
+
+            draw(logs[0]['png']);
+
+        }, 0);
+    }
+}
+
+function nextCanvas(){
+    var logs = JSON.parse(myStorage.getItem("__log"));
+
+    if(temp.length > 0)
+    {
+        logs.unshift(temp.shift());
+
+        setTimeout(function(){
+            myStorage.setItem("__log", JSON.stringify(logs));
+            resetCanvas();
+
+            draw(logs[0]['png']);
+
+        }, 0);
+    }
+}
+
+function draw(src) {
+    var img = new Image();
+    img.src = src;
+
+    img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+    }
+}
+
+//
+window.addEventListener('DOMContentLoaded', () => {
+
+let target = document.getElementById('dnd');
+
+const dragOverHandler = {
+    handleEvent: (event) => {
+        // drop 側に”copy”を許可します
+        // none: ドロップを禁止
+        // copy: コピーのみ許可
+        // move: 移動のみ許可
+        // link: リンクのみ許可
+        // copyMove: コピー/移動のみ許可
+        // copyLink: コピー/リンクのみ許可
+        // linkMove: リンク/移動のみ許可
+        // all: 全ての操作が許可
+        event.dataTransfer.dropEffect = 'all';
+        // dragenter および dragover イベントに対する既定動作はドロップ禁止です。
+        // この規定動作を無効化するため、preventDefault() メソッドを呼び出し、その場所をドロップ可能領域とします。
+        event.preventDefault();
+    }
+};
+target.addEventListener('dragover', dragOverHandler, { capture: false, once: false, passive: false });
+
+const dropHandler = {
+    handleEvent: (event) => {
+        const files = event.dataTransfer.files;
+
+        if (files.length === 1) {
+        const file = files[0];
+        const reader = new FileReader();
+        reader.addEventListener('load', loadReaderHandler, { capture: false, once: true, passive: false });
+        reader.readAsDataURL(file);
+        }
+        event.preventDefault();
+    }
+    }
+
+const drawCanvasHandler = {
+    handleEvent: (event) => {
+        const img = event.target;
+        let canvas = document.getElementById('dnd-canvas');
+        let ctx2 = canvas.getContext('2d');
+        canvas.width = 400;
+        canvas.height = 400;
+        ctx2.clearRect(0, 0, canvas.width, canvas.height);
+        ctx2.drawImage(img, 0, 0, img.width, img.height, 0, 0, 400, 400);
+        ctx2.save();
+    }
+    };
+
+const loadReaderHandler = {
+    handleEvent: (event) => {
+        const img = new Image();
+        img.addEventListener('load', drawCanvasHandler, { capture: false, once: true, passive: true });
+        img.src = event.target.result;
+    }
+    };
+
+target.addEventListener('drop', dropHandler, { capture: false, once: false, passive: false });
+
+}, { capture: false, once: true, passive: true });
+
+const canvas = document.getElementById("dnd-canvas");        
+    let imagePath = "https://joeschmoe.io/api/v1/random";
+    draw(canvas,imagePath);
+    function draw(canvas,imagePath){
+        console.log("draw");
+        const image = new Image();
+        image.addEventListener("load",function (){
+            canvas.width = 400;
+            canvas.height = 400;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(image, 0, 0);
+            console.log("load!");
+        });
+        image.src = imagePath;
+    }
+
+    /* JavaScript 側 */
+    var inputfile = document.getElementById("inputfile");
+    // ファイル選択ダイアログが選択されたときにイベントが発生
+    inputfile.addEventListener('change', (event) => {
+        const target = event.target;
+        const files = target.files;
+        const file = files[0];
+        
+    // ファイル名を出力
+    console.log(file.name);
+        
+    // ファイル内容を出力
+        const reader = new FileReader();
+        reader.addEventListener('load', (event) => {
+        console.log(reader.result);
+        });
+        reader.readAsText(file);
+        });
+</script>
+</body>
+
+</html>

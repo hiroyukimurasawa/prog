@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>infobox show[one/Multiple]</title>
+<style>html,body{height:100%;}body{padding:0;margin:0;}h1{padding:0;margin:0;font-size:50%;}</style>
+</head>
+<body>
+    
+    
+<!-- MAP[START] -->
+<h1>infobox show[one/Multiple]</h1>
+<div id="geoinfo">geocode:info</div>
+<div id="myMap" style='width:80%;height:80%;'></div>
+<table id="table">
+    <tr>
+        <th id="number"></th>
+        <th>店舗名</th>
+        <th>営業時間</th>
+    </tr>
+</table>
+<!-- MAP[END] -->
+
+
+<script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=AlifJJNQU2HLjuz8pM4tLSBcX6htivoXsVYYMYxnUvQc1555Qk5MyGxfaCkEY14P' async defer></script>
+<script src="js/BmapQuery.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+//****************************************************************************************
+// BingMaps&BmapQuery
+//****************************************************************************************
+//Init
+let map;
+function GetMap(){
+
+    //------------------------------------------------------------------------
+    //1. Instance
+    //------------------------------------------------------------------------
+    map = new Bmap("#myMap");
+
+    //------------------------------------------------------------------------
+    //2. Display Map
+    //------------------------------------------------------------------------
+    map.startMap(43.120178,141.243456, "load", 16);
+
+    //----------------------------------------------------
+    //3. Infobox
+    //   options = new Array();
+    //   options[index] = { lat, lon, width, height, title, pinColor, description };
+    //----------------------------------------------------
+    let lat;
+    let lon;
+    map.onGeocode("click", function (data2) {
+                    lat = data2.location.latitude; //Get latitude
+                    lon = data2.location.longitude; //Get longitude
+                    document.querySelector("#geoinfo").innerHTML = lat + ',' + lon;
+                    // ＝＝＝＝＝＝ぐるなびAPI＝＝＝＝＝＝
+                    const data = {
+                        // keyid: $("#key").val(), //必須myid
+                        keyid: "b1b98eddb5d5080cbfe00698e000b0a1",
+                        latitude: lat,
+                        longitude: lon,
+                        range: 5, //範囲
+                        hit_per_page: 5
+                    };
+                    //Ajax（非同期通信）
+                    axios.get('https://api.gnavi.co.jp/RestSearchAPI/v3/', {
+                        params: data
+                    })
+                        .then(function (response) {
+                        //データ受信成功！！showData関数にデータを渡す
+                        showData(response.data);
+                    }).catch(function (error) {
+                        console.log(error); //通信Error
+                    }).then(function () {
+                        //console.log("Last");//通信OK/Error後に処理を必ずさせたい場合
+                    });
+                    function showData(data) {
+                        //データ確認用
+                        console.log(data.rest[0]);
+                        //データを繰り返し処理で取得
+                        const len = data.rest.length; //データ数を取得
+                        console.log("データの個数" + len);
+                        const options = [];
+                        for (let i = 0; i < len; i++) {
+                            $("#table").append('<tr><td>' + [i] + '</td><td>' + data.rest[i].name +
+                                            '</td><td>' + data.rest[i]
+                                            .opentime +
+                                            '</td></tr>');
+                            // map.pinText(data.rest[i].latitude, data.rest[i].longitude, data.rest[i].name);
+                            // map.infobox(data.rest[i].latitude, data.rest[i].longitude, '【' + [i] + '】' + data
+                            //     .rest[i].name, data.rest[0].image_url);
+                            console.log(options);
+                            options[i] = {
+                                "lat": data.rest[i].latitude,
+                                "lon": data.rest[i].longitude,
+                                "title": data.rest[i].name,
+                                "pinColor": "#ff0000",
+                                "height": 300,
+                                "width": 320,
+                                "description": data.rest[i].address,
+                                "show": true
+                            };
+                        };
+                        //----------------------------------------------------
+    //4. Switch infoboxs
+    //   infoboxLayers(options, true); //true=one, false=Multiple
+    //----------------------------------------------------
+    map.infoboxLayers(options,false);
+                    };
+                });
+            }
+</script>
+
+</body>
+</html>
