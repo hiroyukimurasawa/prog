@@ -8,7 +8,7 @@ loginCheck();
 $pdo = dbcon();
 
 //２．データ登録SQL作成
-$stmt   = $pdo->prepare("SELECT * FROM gskadai_bm");
+$stmt   = $pdo->prepare("SELECT * FROM gs_logtest");
 $status = $stmt->execute();
 
 //３．データ表示
@@ -22,15 +22,10 @@ if($status==false) {
   //Selectデータの数だけ自動でループしてくれる FETCHは一回のみ処理
   //FETCH_ASSOC=http://php.net/manual/ja/pdostatement.fetch.php
   while( $res = $stmt->fetch(PDO::FETCH_ASSOC)){
-    $url = $res["b_url"];
     //getリンク作成
     $view .="<div>";
-    $view .='<a href="edit.php?id='.$res["id"].'">';
-    $view .= $res["id"]."-".$res["b_name"]."-".$res["b_url"]."-".$res["b_cm"]."-".$res["in_date"];
-    $view .='</a>';
-    $view .='　';
-    $view .="<a href=$url target='_blank'>";
-    $view .='[URL]';
+    $view .='<a href="u_edit.php?id='.$res["id"].'">';
+    $view .= $res["id"]."-".$res["u_name"]."-".$res["u_id"]."-".$res["u_pw"]."-".$res["life_flg"]."-".$res["kanri_flg"]."-".$res["in_date"];
     $view .='</a>';
     $view .='　';
     $view .='<a href="delete.php?id='.$res["id"].'">';
@@ -59,7 +54,7 @@ if($status==false) {
 <div class="container-fluid">
     <div class="navbar-header">
     <a class="navbar-brand" href="index.php">データ登録に戻る</a>
-    <a class="navbar-brand" href="userlist.php">ユーザー一覧に行く</a>
+    <a class="navbar-brand" href="user_index.php">ユーザー新規登録へ</a>
     <a class="navbar-brand" href="logout.php">ログアウト</a>
     </div>
 </div>

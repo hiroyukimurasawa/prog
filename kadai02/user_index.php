@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>BOOKデータ登録</title>
+    <title>ユーザー登録</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <style>div{padding: 10px;font-size:16px;}</style>
 </head>
@@ -19,14 +19,15 @@
 <!-- Head[End] -->
 
 <!-- Main[Start] -->
-<a href="narou.php">なろうデイリーポイント順表示</a>
-<form method="POST" action="insert.php">
+<form method="POST" action="user_insert.php">
     <div class="jumbotron">
         <fieldset>
-        <legend>本のデータ登録</legend>
-        <label>本の名前：<input type="text" name="b_name"></label><br>
-        <label>本のURL：<input type="text" name="b_url"></label><br>
-        <label>本の一言コメント：<textArea name="b_cm" rows="4" cols="40"></textArea></label><br>
+        <legend>ユーザー新規登録</legend>
+        <label>ユーザー名：<input type="text" name="u_name"></label><br>
+        <label>ユーザーID：<input type="text" name="u_id"></label><br>
+        <label>ユーザーPW：<input type="text" name="u_pw"></label><br>
+        <input type="hidden" name="life_flg" value="1"></label><br>
+        <input type="hidden" name="kanri_flg" value="1"></label><br>
 
         <input type="submit" value="送信">
         </fieldset>
